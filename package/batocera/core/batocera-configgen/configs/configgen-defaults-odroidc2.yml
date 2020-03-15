@@ -11,3 +11,15 @@ psp:
 neogeocd:
   emulator: libretro
   core:     fbneo
+amiga500:
+  emulator: libretro
+  core:     puae
+amiga1200:
+  emulator: libretro
+  core:     puae
+amigacd32:
+  emulator: libretro
+  core:     puae
+amigacdtv:
+  emulator: libretro
+  core:     puae

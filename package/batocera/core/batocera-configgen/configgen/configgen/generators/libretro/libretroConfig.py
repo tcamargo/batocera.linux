@@ -28,10 +28,10 @@ coreToP1Device = {'cap32': '513', '81': '257', 'fuse': '513'};
 coreToP2Device = {'fuse': '513'};
 
 # Define systems compatible with retroachievements
-systemToRetroachievements = {'snes', 'nes', 'gba', 'gb', 'gbc', 'megadrive', 'mastersystem', 'pcengine', 'lynx', 'ngp', 'atari2600', 'atari7800', 'lynx', 'virtualboy', 'neogeo', 'neogeocd', 'colecovision', 'mame', 'fba', 'lightgun', 'apple2', 'psx'};
+systemToRetroachievements = {'atari2600', 'atari7800', 'atarijaguar', 'colecovision', 'nes', 'snes', 'virtualboy', 'n64', 'sg1000', 'mastersystem', 'megadrive', 'segacd', 'sega32x', 'saturn', 'pcengine', 'pcenginecd', 'supergrafx', 'psx', 'mame', 'fba', 'neogeo', 'lightgun', 'apple2', 'lynx', 'wswan', 'wswanc', 'gb', 'gbc', 'gba', 'nds', 'pokemini', 'gamegear', 'ngp', 'ngpc'}; 
 
 # Define systems not compatible with rewind option
-systemNoRewind = {'sega32x', 'psx', 'zxspectrum', 'odyssey2', 'mame', 'n64', 'dreamcast', 'atomiswave', 'naomi', 'neogeocd', 'saturn'};
+systemNoRewind = {'sega32x', 'psx', 'zxspectrum', 'odyssey2', 'mame', 'n64', 'dreamcast', 'atomiswave', 'naomi', 'neogeocd', 'saturn', 'fba'};
 
 # Define system emulated by bluemsx core
 systemToBluemsx = {'msx': '"MSX2"', 'msx1': '"MSX2"', 'msx2': '"MSX2"', 'colecovision': '"COL - ColecoVision"' };
@@ -189,20 +189,31 @@ def createLibretroConfig(system, controllers, rom, bezel, gameResolution):
         retroarchConfig['aspect_ratio_index'] = str(ratioIndexes.index("core")) # reset each time in this function
         
     # Netplay management
-    if 'netplaymode' in system.config and system.config['netplaymode'] in systemNetplayModes:
+    if 'netplay.mode' in system.config and system.config['netplay.mode'] in systemNetplayModes:
         # Security : hardcore mode disables save states, which would kill netplay
         retroarchConfig['cheevos_hardcore_mode_enable'] = 'false'
         # Quite strangely, host mode requires netplay_mode to be set to false when launched from command line
         retroarchConfig['netplay_mode']              = "false"
         retroarchConfig['netplay_ip_port']           = systemConfig.get('netplay.server.port', "")
         retroarchConfig['netplay_delay_frames']      = systemConfig.get('netplay.frames', "")
-        retroarchConfig['netplay_nickname']          = systemConfig.get('netplay.nick', "")
+        retroarchConfig['netplay_nickname']          = systemConfig.get('netplay.nickname', "")
         retroarchConfig['netplay_client_swap_input'] = "false"
-        if system.config['netplaymode'] == 'client':
+        if system.config['netplay.mode'] == 'client':
             # But client needs netplay_mode = true ... bug ?
             retroarchConfig['netplay_mode']              = "true"
             retroarchConfig['netplay_ip_address']        = systemConfig.get('netplay.server.ip', "")
             retroarchConfig['netplay_client_swap_input'] = "true"
+        # mode spectator
+        if system.isOptSet('netplay.spectator') and system.getOptBoolean('netplay.spectator') == True:
+            retroarchConfig['netplay_spectator_mode_enable'] = 'true'
+        else:
+            retroarchConfig['netplay_spectator_mode_enable'] = 'false'
+        # relay
+        if 'netplay.relay' in system.config and system.config['netplay.relay'] != "" :
+            retroarchConfig['netplay_use_mitm_server'] = "true"
+            retroarchConfig['netplay_mitm_server'] = systemConfig.get('netplay.relay', "")
+        else:
+            retroarchConfig['netplay_use_mitm_server'] = "false"
 
     # Display FPS
     if system.isOptSet('showFPS') and system.getOptBoolean('showFPS') == True:
@@ -211,14 +222,18 @@ def createLibretroConfig(system, controllers, rom, bezel, gameResolution):
         retroarchConfig['fps_show'] = 'false'
 
     # adaptation for small resolution
-    if gameResolution["width"] < 400 and gameResolution["height"] < 400:
+    if isLowResolution(gameResolution):
         retroarchConfig['video_font_size'] = '12'
         retroarchConfig['menu_driver'] = 'rgui'
+        retroarchConfig['width']  = gameResolution["width"]  *2 # on low resolution, higher values for width and height makes a nicer image (640x480 on the gpi case)
+        retroarchConfig['height'] = gameResolution["height"] *2 # default value
     else:
         retroarchConfig['video_font_size'] = '32'
         retroarchConfig['menu_driver'] = 'ozone'
         # force the assets directory while it was wrong in some beta versions
         retroarchConfig['assets_directory'] = '/usr/share/libretro/assets'
+        retroarchConfig['width']  = gameResolution["width"]  # default value
+        retroarchConfig['height'] = gameResolution["height"] # default value
 
     # AI service for game translations
     if system.isOptSet('ai_service_enabled') and system.getOptBoolean('ai_service_enabled') == True:
@@ -229,6 +244,10 @@ def createLibretroConfig(system, controllers, rom, bezel, gameResolution):
             retroarchConfig['ai_service_url'] = system.config['ai_service_url']+'&mode=Fast&output=png&target_lang='+system.config['ai_target_lang']
         else:
             retroarchConfig['ai_service_url'] = 'http://ztranslate.net/service?api_key=BATOCERA&mode=Fast&output=png&target_lang='+system.config['ai_target_lang']
+        if system.isOptSet('ai_service_pause') and system.getOptBoolean('ai_service_pause') == True:
+            retroarchConfig['ai_service_pause'] = 'true'
+        else:
+            retroarchConfig['ai_service_pause'] = 'false'
     else:
         retroarchConfig['ai_service_enable'] = 'false'
 
@@ -359,6 +378,9 @@ def writeBezelConfig(bezel, retroarchConfig, systemName, rom, gameResolution):
         retroarchConfig['video_message_pos_y']    = infos["messagey"]
 
     writeBezelCfgConfig(overlay_cfg_file, overlay_png_file)
+
+def isLowResolution(gameResolution):
+    return gameResolution["width"] < 400 and gameResolution["height"] < 400
 
 def writeBezelCfgConfig(cfgFile, overlay_png_file):
     fd = open(cfgFile, "w")

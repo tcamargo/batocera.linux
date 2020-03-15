@@ -6,7 +6,7 @@ default:
     ratio:          auto
     video_threaded: false
     smooth:         true
-    rewind:         true
+    rewind:         false
     bezel:          default
     forceNoBezel:   false
 
@@ -79,7 +79,7 @@ segacd:
   core:     genesisplusgx
 saturn:
   emulator: libretro
-  core:     yabause
+  core:     yabasanshiro
 dreamcast:
   emulator: reicast
   core: reicast
@@ -101,18 +101,27 @@ mame:
 fba:
   emulator: libretro
   core:     fbneo
-msx:
+msx1:
   emulator: libretro
   core:     bluemsx
-amiga:
+msx2:
+  emulator: libretro
+  core:     bluemsx
+msx2+:
+  emulator: libretro
+  core:     bluemsx
+amiga500:
+  emulator: fsuae
+  core:     A500
+amiga1200:
   emulator: fsuae
   core:     A1200
 amigacd32:
   emulator: fsuae
   core:     CD32
 amigacdtv:
-  emulator: fsuae
-  core:     CDTV
+  emulator: libretro
+  core:     puae
 amstradcpc:
   emulator: libretro
   core:     cap32
@@ -141,6 +150,12 @@ dos:
 c64:
   emulator: vice
   core:     x64
+c128:
+  emulator: vice
+  core:     x128
+c20:
+  emulator: vice
+  core:     xvic
 x68000:
   emulator: libretro
   core:     px68k
@@ -249,9 +264,15 @@ pokemini:
 gx4000:
   emulator: libretro
   core:     cap32
-daphne:
+thomson:
   emulator: libretro
-  core:     daphne
+  core:     theodore
+pc98:
+  emulator: libretro
+  core:     np2kai
 lightgun:
   emulator: libretro
   core:     mame078plus
+daphne:
+  emulator: daphne
+  core:     hypseus

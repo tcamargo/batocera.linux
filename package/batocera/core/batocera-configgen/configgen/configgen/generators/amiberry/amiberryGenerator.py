@@ -20,7 +20,7 @@ class AmiberryGenerator(Generator):
         romIsWhd = self.isWhdFile(rom)
         commandArray = [ batoceraFiles.batoceraBins[system.config['emulator']], "-G" ]
         if not romIsWhd:
-	    commandArray.append("-core=" + system.config['core'])
+	    commandArray.append("-model=" + system.config['core'])
 
         # floppies
         n = 0
@@ -32,10 +32,10 @@ class AmiberryGenerator(Generator):
 
         # floppy path
         if romIsWhd:
-            commandArray.append("-autowhdload="+rom)
+            commandArray.append("-autoload="+rom)
         else:
 	    commandArray.append("-s")
-	    commandArray.append("pandora.floppy_path=/userdata/roms/amiga/" + system.config['core'])
+	    commandArray.append("amiberry.floppy_path=/userdata/roms/amiga/" + system.config['core'])
 
         # controller
         libretroControllers.writeControllersConfig(retroconfig, system, playersControllers)
@@ -46,20 +46,35 @@ class AmiberryGenerator(Generator):
         for playercontroller, pad in sorted(playersControllers.items()):
             replacements = {'_player' + str(nplayer) + '_':'_'}
             # amiberry remove / included in pads names like "USB Downlo01.80 PS3/USB Corded Gamepad"
-            playerInputFilename = batoceraFiles.amiberryRetroarchInputsDir + "/" + pad.realName.replace("/", "") + ".cfg"
+            padfilename = pad.realName.replace("/", "")
+            playerInputFilename = batoceraFiles.amiberryRetroarchInputsDir + "/" + padfilename + ".cfg"
             with open(batoceraFiles.amiberryRetroarchCustom) as infile, open(playerInputFilename, 'w') as outfile:
 	        for line in infile:
                     for src, target in replacements.iteritems():
 		        newline = line.replace(src, target)
 		        if not newline.isspace():
 		            outfile.write(newline)
+            if nplayer == 1: # 1 = joystick port
+                commandArray.append("-s")
+                commandArray.append("joyport1_friendlyname=" + padfilename)
+            if nplayer == 2: # 0 = mouse for the player 2
+                commandArray.append("-s")
+                commandArray.append("joyport0_friendlyname=" + padfilename)
             nplayer += 1
 
         # fps
 	if system.config['showFPS'] == 'true':
             commandArray.append("-s")
             commandArray.append("show_leds=true")
-        
+
+        # disable port 2 (otherwise, the joystick goes on it)
+        commandArray.append("-s")
+        commandArray.append("joyport2=")
+
+        # display vertical centering
+        commandArray.append("-s")
+        commandArray.append("gfx_center_vertical=smart")
+
         os.chdir("/usr/share/amiberry")
         return Command.Command(array=commandArray)
 

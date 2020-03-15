@@ -3,7 +3,8 @@
 # MESEN-S
 #
 ################################################################################
-LIBRETRO_MESEN_S_VERSION = 5da37974fc6a8efc651c834e42162dd8fe8af99e
+# Version.: Commits on Feb 02, 2020
+LIBRETRO_MESEN_S_VERSION = bfe8e8abcebb257f6d4ea85ad61c3ee32a02cb4d
 LIBRETRO_MESEN_S_SITE = $(call github,SourMesen,Mesen-S,$(LIBRETRO_MESEN_S_VERSION))
 
 define LIBRETRO_MESEN_S_BUILD_CMDS

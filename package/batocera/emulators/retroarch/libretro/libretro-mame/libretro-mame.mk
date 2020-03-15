@@ -3,9 +3,8 @@
 # MAME
 #
 ################################################################################
-# Version: 0.214
-LIBRETRO_MAME_VERSION = a88ebb32ba257de7bd33ff106092ee955b7b5db1
-# using poke-1,0 repo until upstream accepts our PRs
+# Version: Commits on Mar 2, 2020 (0.219)
+LIBRETRO_MAME_VERSION = ed987ad07964a938351ff3cc1ad42e02ffd2af6d
 # LIBRETRO_MAME_SITE = $(call github,tcamargo,mame,$(LIBRETRO_MAME_VERSION))
 LIBRETRO_MAME_SITE = $(call github,libretro,mame,$(LIBRETRO_MAME_VERSION))
 # LIBRETRO_MAME_OVERRIDE_SRCDIR = /sources/mame

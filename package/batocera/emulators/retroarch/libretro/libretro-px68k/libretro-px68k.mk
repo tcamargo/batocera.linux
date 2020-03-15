@@ -3,13 +3,14 @@
 # PX68K
 #
 ################################################################################
-# Version.: Commits on Aug 23, 2019
-LIBRETRO_PX68K_VERSION = 85d59f0be31d0ce9249df89a9b8416241fa55deb
+# Version.: Commits on Jan 24s, 2020
+LIBRETRO_PX68K_VERSION = 51ee79325a5aa5b3c86e6d62d888c255953fb8dc
 LIBRETRO_PX68K_SITE = $(call github,libretro,px68k-libretro,$(LIBRETRO_PX68K_VERSION))
 LIBRETRO_PX68K_LICENSE = Unknown
 
 define LIBRETRO_PX68K_BUILD_CMDS
-	CFLAGS="$(TARGET_CFLAGS)" CXXFLAGS="$(TARGET_CXXFLAGS)" $(MAKE) CXX="$(TARGET_CXX)" CC="$(TARGET_CC)" -C $(@D)/ -f Makefile.libretro platform="$(LIBRETRO_PLATFORM)"
+	CFLAGS="$(TARGET_CFLAGS)" CXXFLAGS="$(TARGET_CXXFLAGS)" $(MAKE) CXX="$(TARGET_CXX)" CC="$(TARGET_CC)" \
+		-C $(@D)/ -f Makefile.libretro platform="$(LIBRETRO_PLATFORM)"
 endef
 
 define LIBRETRO_PX68K_INSTALL_TARGET_CMDS

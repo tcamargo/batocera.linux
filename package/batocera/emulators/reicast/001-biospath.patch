@@ -1,0 +1,16 @@
+diff --git a/core/nullDC.cpp b/core/nullDC.cpp
+index 2e10c84..76bcf98 100755
+--- a/core/nullDC.cpp
++++ b/core/nullDC.cpp
+@@ -185,9 +185,9 @@ int dc_init(int argc,wchar* argv[])
+     #define DATA_PATH "/"
+ #endif
+ 
+-	if (settings.bios.UseReios || !LoadRomFiles(get_readonly_data_path(DATA_PATH)))
++	if (settings.bios.UseReios || !LoadRomFiles("/userdata/bios/"))
+ 	{
+-		if (!LoadHle(get_readonly_data_path(DATA_PATH)))
++		if (!LoadHle("/userdata/bios/"))
+ 		{
+ #if defined(_ANDROID)
+ 			reios_init_value = -4;

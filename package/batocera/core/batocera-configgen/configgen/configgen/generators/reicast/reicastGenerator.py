@@ -29,6 +29,10 @@ class ReicastGenerator(Generator):
         if not Config.has_section("input"):
             Config.add_section("input")
         # For each pad detected
+        for index in range(len(playersControllers), 4):
+            Config.set("input", 'evdev_device_id_' + str(index+1), -1)
+            Config.set("input", 'evdev_mapping_' + str(index+1), "")
+
         for index in playersControllers:
             controller = playersControllers[index]
         
@@ -59,6 +63,17 @@ class ReicastGenerator(Generator):
         #    Config.set("config", "WideScreen", "1")
         else:
             Config.set("config", "rend.WideScreen", "0")
+
+        # custom : allow the user to configure directly emu.cfg via batocera.conf via lines like : dreamcast.reicast.section.option=value
+        for user_config in system.config:
+            if user_config[:8] == "reicast.":
+                section_option = user_config[8:]
+                section_option_splitter = section_option.find(".")
+                custom_section = section_option[:section_option_splitter]
+                custom_option = section_option[section_option_splitter+1:]
+                if not Config.has_section(custom_section):
+                    Config.add_section(custom_section)
+                Config.set(custom_section, custom_option, system.config[user_config])
 
         ### update the configuration file
         if not os.path.exists(os.path.dirname(batoceraFiles.reicastConfig)):

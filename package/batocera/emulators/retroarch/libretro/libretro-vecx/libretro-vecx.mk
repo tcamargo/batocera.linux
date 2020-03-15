@@ -3,13 +3,14 @@
 # VECX
 #
 ################################################################################
-# Version.: Commits on Aug 17, 2019
-LIBRETRO_VECX_VERSION = 26585ee701499550e484c11f005db18e926827d9
+# Version.: Commits on Jan 09, 2020
+LIBRETRO_VECX_VERSION = 321205271b1c6be5dbdb8d309097a5b5c2032dbd
 LIBRETRO_VECX_SITE = $(call github,libretro,libretro-vecx,$(LIBRETRO_VECX_VERSION))
 LIBRETRO_VECX_LICENSE = GPLv2|LGPLv2.1
 
 define LIBRETRO_VECX_BUILD_CMDS
-	CFLAGS="$(TARGET_CFLAGS)" CXXFLAGS="$(TARGET_CXXFLAGS)" $(MAKE) CXX="$(TARGET_CXX)" CC="$(TARGET_CC)" -C $(@D)/ -f Makefile.libretro platform="$(LIBRETRO_PLATFORM)"
+	CFLAGS="$(TARGET_CFLAGS)" CXXFLAGS="$(TARGET_CXXFLAGS)" $(MAKE) CXX="$(TARGET_CXX)" CC="$(TARGET_CC)" \
+		-C $(@D)/ -f Makefile.libretro platform="$(LIBRETRO_PLATFORM)"
 endef
 
 define LIBRETRO_VECX_INSTALL_TARGET_CMDS

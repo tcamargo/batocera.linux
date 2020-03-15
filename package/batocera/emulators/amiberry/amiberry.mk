@@ -3,8 +3,8 @@
 # AMIBERRY
 #
 ################################################################################
-# Version.: Commits on Aug 28, 2019
-AMIBERRY_VERSION = abf0e0cb6e73e5e1b87433cd6a5d01f967ccaf77
+# Version.: Commits on Feb 18, 2020
+AMIBERRY_VERSION = v3.1.2
 AMIBERRY_SITE = $(call github,midwan,amiberry,$(AMIBERRY_VERSION))
 AMIBERRY_LICENSE = GPLv3
 AMIBERRY_DEPENDENCIES = sdl2 sdl2_image sdl2_ttf mpg123 libxml2 libmpeg2 flac
@@ -23,7 +23,11 @@ else ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_XU4)$(BR2_PACKAGE_BATOCERA_TARGET_LEGAC
 	AMIBERRY_BATOCERA_SYSTEM=xu4
 else ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_ODROIDN2),y)
 	AMIBERRY_BATOCERA_SYSTEM=AMLG12B
+else ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_ODROIDGOA),y)
+	AMIBERRY_BATOCERA_SYSTEM=RK3326
 else ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_ROCKPRO64),y)
+	AMIBERRY_BATOCERA_SYSTEM=RK3399
+else ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_ROCK960),y)
 	AMIBERRY_BATOCERA_SYSTEM=RK3399
 else ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_TINKERBOARD),y)
 	AMIBERRY_BATOCERA_SYSTEM=RK3288
@@ -52,7 +56,7 @@ define AMIBERRY_BUILD_CMDS
 endef
 
 define AMIBERRY_INSTALL_TARGET_CMDS
-	$(INSTALL) -D $(@D)/amiberry-$(AMIBERRY_BATOCERA_SYSTEM) $(TARGET_DIR)/usr/bin/amiberry
+	$(INSTALL) -D $(@D)/amiberry $(TARGET_DIR)/usr/bin/amiberry
         mkdir -p $(TARGET_DIR)/usr/share/amiberry
 
 	ln -sf /userdata/system/configs/amiberry/whdboot $(TARGET_DIR)/usr/share/amiberry/whdboot

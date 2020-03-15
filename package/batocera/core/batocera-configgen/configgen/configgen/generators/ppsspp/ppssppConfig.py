@@ -29,6 +29,8 @@ def writePPSSPPConfig(system):
 def createPPSSPPConfig(iniConfig, system):
     if not iniConfig.has_section("Graphics"):
         iniConfig.add_section("Graphics")
+    if not iniConfig.has_section("General"):
+        iniConfig.add_section("General")
 
     # Display FPS
     if system.isOptSet('showFPS') and system.getOptBoolean('showFPS') == True:
@@ -51,3 +53,20 @@ def createPPSSPPConfig(iniConfig, system):
         iniConfig.set("Graphics", "InternalResolution", system.config["internalresolution"])
     else:
         iniConfig.set("Graphics", "InternalResolution", "1")
+
+    # rewinding
+    if system.isOptSet('rewind') and system.getOptBoolean('rewind') == True:
+        iniConfig.set("General", "RewindFlipFrequency", "300") # 300 = every 5 seconds
+    else:
+        iniConfig.set("General", "RewindFlipFrequency",  "0")
+
+    # custom : allow the user to configure directly mupen64plus.cfg via batocera.conf via lines like : n64.mupen64plus.section.option=value
+    for user_config in system.config:
+        if user_config[:7] == "ppsspp.":
+            section_option = user_config[7:]
+            section_option_splitter = section_option.find(".")
+            custom_section = section_option[:section_option_splitter]
+            custom_option = section_option[section_option_splitter+1:]
+            if not iniConfig.has_section(custom_section):
+                iniConfig.add_section(custom_section)
+            iniConfig.set(custom_section, custom_option, system.config[user_config])

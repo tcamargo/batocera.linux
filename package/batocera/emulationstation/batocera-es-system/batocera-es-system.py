@@ -14,6 +14,7 @@ class EsSystemConf:
 
     default_parentpath = "/userdata/roms"
     default_command    = "python /usr/lib/python2.7/site-packages/configgen/emulatorlauncher.py %CONTROLLERSCONFIG% -system %SYSTEM% -rom %ROM%"
+    netplay_command    = "python /usr/lib/python2.7/site-packages/configgen/emulatorlauncher.py %CONTROLLERSCONFIG% %NETPLAY% -system %SYSTEM% -rom %ROM%"
 
     # Generate the es_systems.cfg file by searching the information in the es_system.yml file
     @staticmethod
@@ -85,6 +86,14 @@ class EsSystemConf:
         pathValue      = EsSystemConf.systemPath(system, data)
         platformValue  = EsSystemConf.systemPlatform(system, data)
         listExtensions = EsSystemConf.listExtension(data, True)
+        groupValue     = EsSystemConf.systemGroup(system, data)
+        command        = EsSystemConf.default_command
+        if "emulators" in data:
+            if "libretro" in data["emulators"]:
+                for libretro_core in data["emulators"]["libretro"]:
+                    if "netplay" in data["emulators"]["libretro"][libretro_core] and \
+                        data["emulators"]["libretro"][libretro_core]["netplay"] == True :
+                            command = EsSystemConf.netplay_command
 
         systemTxt =  "  <system>\n"
         systemTxt += "        <fullname>%s</fullname>\n" % (data["name"])
@@ -93,10 +102,12 @@ class EsSystemConf:
             systemTxt += "        <path>%s</path>\n"           % (pathValue)
         if listExtensions != "":
             systemTxt += "        <extension>%s</extension>\n" % (listExtensions)
-        systemTxt += "        <command>%s</command>\n"     % (EsSystemConf.default_command)
+        systemTxt += "        <command>%s</command>\n"     % (command)
         if platformValue != "":
             systemTxt += "        <platform>%s</platform>\n"   % (platformValue)
         systemTxt += "        <theme>%s</theme>\n"         % (EsSystemConf.themeName(system, data))
+        if groupValue != "":
+            systemTxt += "        <group>%s</group>\n" % (groupValue)        
         if not("includeEmulators" in data and data["includeEmulators"] is False):
             systemTxt += listEmulatorsTxt
         systemTxt += "  </system>\n"
@@ -206,6 +217,15 @@ class EsSystemConf:
                 if uppercase == True:
                     extension += " ." + item.upper()
         return extension
+
+    # Returns group to emulator rom folder
+    @staticmethod
+    def systemGroup(system, data):
+        if "group" in data:
+            if data["group"] is None:
+                return ""
+            return data["group"]
+        return ""
 
     # Returns the validity of prerequisites
     @staticmethod

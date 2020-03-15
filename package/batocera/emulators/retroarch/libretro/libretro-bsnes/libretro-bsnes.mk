@@ -3,14 +3,14 @@
 # BSNES
 #
 ################################################################################
-# Version.: Commits on Sep 22, 2019 (v110.1)
-LIBRETRO_BSNES_VERSION = 6e5542aa20e1b483e3a8249018d183f7fc06a969
-LIBRETRO_BSNES_SITE = $(call github,byuu,bsnes,$(LIBRETRO_BSNES_VERSION))
+# Version.: Commits on Jan 18, 2020 (v114.3)
+LIBRETRO_BSNES_VERSION = 7053a0b60513f51984a5bc8b551fc8592dc0bb1d
+LIBRETRO_BSNES_SITE = $(call github,libretro,bsnes,$(LIBRETRO_BSNES_VERSION))
 LIBRETRO_BSNES_LICENSE = GPLv3
 
 define LIBRETRO_BSNES_BUILD_CMDS
 	CFLAGS="$(TARGET_CFLAGS)" CXXFLAGS="$(TARGET_CXXFLAGS)" $(MAKE) CXX="$(TARGET_CXX)" \
-		CC="$(TARGET_CC)" -C $(@D)/bsnes -f GNUmakefile target="libretro" platform=linux
+		CC="$(TARGET_CC)" -C $(@D)/bsnes -f GNUmakefile target="libretro" platform=linux local=false
 endef
 
 define LIBRETRO_BSNES_INSTALL_TARGET_CMDS

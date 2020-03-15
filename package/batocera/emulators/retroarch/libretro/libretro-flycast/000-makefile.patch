@@ -1,0 +1,22 @@
+diff --git a/Makefile b/Makefile
+index 36aacd6..36b93b9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -417,7 +417,7 @@ else ifeq ($(platform), odroid-n2)
+ 	CXXFLAGS += -mcpu=cortex-a73 -mtune=cortex-a73.cortex-a53 $(CPUFLAGS)
+ 	ASFLAGS += $(CFLAGS) -c -frename-registers -fno-strict-aliasing -ffast-math -ftree-vectorize
+ 	PLATFORM_EXT := unix
+-	WITH_DYNAREC=arm64
++	WITH_DYNAREC=arm
+ 	HAVE_GENERIC_JIT = 0
+ 	HAVE_LTCG = 0
+ 
+@@ -1044,7 +1044,7 @@ LIBS     += -lm
+ PREFIX        ?= /usr/local
+ 
+ ifneq (,$(findstring arm, $(ARCH)))
+-	CC_AS    = ${CC_PREFIX}gcc #The ngen_arm.S must be compiled with gcc, not as
++	CC_AS    = ${CC_PREFIX}${CC} #The ngen_arm.S must be compiled with gcc, not as
+ 	ASFLAGS  += $(CFLAGS)
+ endif
+ 

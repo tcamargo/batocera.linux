@@ -3,6 +3,7 @@ import Command
 import libretroControllers
 import batoceraFiles
 import libretroConfig
+import libretroRetroarchCustom
 import shutil
 from generators.Generator import Generator
 import os.path
@@ -20,7 +21,7 @@ class LibretroGenerator(Generator):
             system.config['configfile'] = batoceraFiles.retroarchCustom
             # Create retroarchcustom.cfg if does not exists
             if not os.path.isfile(batoceraFiles.retroarchCustom):
-                shutil.copyfile(batoceraFiles.retroarchCustomOrigin, batoceraFiles.retroarchCustom)
+                libretroRetroarchCustom.generateRetroarchCustom()
             #  Write controllers configuration files
             retroconfig = UnixSettings(batoceraFiles.retroarchCustom, separator=' ')
             libretroControllers.writeControllersConfig(retroconfig, system, playersControllers)
@@ -43,6 +44,8 @@ class LibretroGenerator(Generator):
         # For the NeoGeo CD (lr-fbneo) it is necessary to add the parameter: --subsystem neocd
         if system.name == 'neogeocd' and system.config['core'] == "fbneo":
             commandArray = [batoceraFiles.batoceraBins[system.config['emulator']], "-L", retroarchCore, "--subsystem", "neocd", "--config", system.config['configfile']]
+        elif system.name == 'dos':
+            commandArray = [batoceraFiles.batoceraBins[system.config['emulator']], "-L", retroarchCore, "--config", system.config['configfile'], rom + "/dosbox.bat"]
         else:
             commandArray = [batoceraFiles.batoceraBins[system.config['emulator']], "-L", retroarchCore, "--config", system.config['configfile']]
 
@@ -81,14 +84,26 @@ class LibretroGenerator(Generator):
             commandArray.extend(["--appendconfig", "|".join(configToAppend)])
 
          # Netplay mode
-        if 'netplaymode' in system.config:
-            if system.config['netplaymode'] == 'host':
+        if 'netplay.mode' in system.config:
+            if system.config['netplay.mode'] == 'host':
                 commandArray.append("--host")
-            elif system.config['netplaymode'] == 'client':
-                commandArray.extend(["--connect", system.config['netplay.server.address']])
+            elif system.config['netplay.mode'] == 'client':
+                commandArray.extend(["--connect", system.config['netplay.server.ip']])
+            if 'netplay.server.port' in system.config:
+                commandArray.extend(["--port", system.config['netplay.server.port']])
+            if 'netplay.nickname' in system.config:
+                commandArray.extend(["--nick", system.config['netplay.nickname']])
 
         # Verbose logs
         commandArray.extend(['--verbose'])
 
+        # Extension used by hypseus .daphne but lr-daphne starts with .zip
+        if system.name == 'daphne':
+            romName = os.path.splitext(os.path.basename(rom))[0]
+            rom = batoceraFiles.daphneDatadir + '/roms/' + romName +'.zip'
+        
+        if system.name == 'dos':
+            rom = 'set ROOT=' + rom
+        
         commandArray.append(rom)
         return Command.Command(array=commandArray)

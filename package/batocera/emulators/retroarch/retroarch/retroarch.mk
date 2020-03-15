@@ -3,16 +3,22 @@
 # retroarch
 #
 ################################################################################
-# Version: 1.7.9.2
-RETROARCH_VERSION = v1.7.9.2
+RETROARCH_VERSION = v1.8.4
 RETROARCH_SITE = $(call github,libretro,RetroArch,$(RETROARCH_VERSION))
 RETROARCH_LICENSE = GPLv3+
-RETROARCH_DEPENDENCIES = host-pkgconf dejavu retroarch-assets
+RETROARCH_DEPENDENCIES = host-pkgconf dejavu retroarch-assets flac
 # install in staging for debugging (gdb)
 RETROARCH_INSTALL_STAGING = YES
 
-RETROARCH_CONF_OPTS = --disable-oss --enable-zlib --disable-qt --enable-threads
-RETROARCH_CONF_OPTS += --enable-flac --enable-lua --enable-networking --enable-translate --enable-cdrom
+RETROARCH_CONF_OPTS = --disable-oss --enable-zlib --disable-qt --enable-threads --enable-ozone --enable-xmb --disable-discord
+RETROARCH_CONF_OPTS += --enable-flac --enable-lua --enable-networking --enable-translate --enable-cdrom --enable-rgui
+
+ifeq ($(BR2_PACKAGE_FFMPEG),y)
+	RETROARCH_CONF_OPTS += --enable-ffmpeg
+	RETROARCH_DEPENDENCIES += ffmpeg
+else
+	RETROARCH_CONF_OPTS += --disable-ffmpeg
+endif
 
 ifeq ($(BR2_PACKAGE_SDL2),y)
 	RETROARCH_CONF_OPTS += --enable-sdl2
@@ -170,6 +176,10 @@ endif
 
 ifeq ($(BR2_arm)$(BR2_cortex_a72_a53),yy)
     LIBRETRO_PLATFORM += armv7
+endif
+
+ifeq ($(BR2_arm)$(BR2_cortex_a35),yy)
+    LIBRETRO_PLATFORM += classic_armv8_a35
 endif
 
 ifeq ($(BR2_arm)$(BR2_cortex_a73_a53),yy)

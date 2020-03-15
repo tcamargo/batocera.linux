@@ -31,6 +31,9 @@ fi
 # we don't want default xorg files
 rm -f "${TARGET_DIR}/etc/X11/xorg.conf" || exit 1
 
+# remove the S10triggerhappy
+rm -f "${TARGET_DIR}/etc/init.d/S10triggerhappy" || exit 1
+
 # we want an empty boot directory (grub installation copy some files in the target boot directory)
 rm -rf "${TARGET_DIR}/boot/grub" || exit 1
 
@@ -51,6 +54,10 @@ if test -e "${TARGET_DIR}/etc/init.d/S45connman"
 then
     mv "${TARGET_DIR}/etc/init.d/S45connman" "${TARGET_DIR}/etc/init.d/S08connman" || exit 1 # move to make before share
 fi
+if test -e "${TARGET_DIR}/etc/init.d/S21rngd"
+then
+    mv "${TARGET_DIR}/etc/init.d/S21rngd"    "${TARGET_DIR}/etc/init.d/S33rngd"    || exit 1 # move because it takes several seconds (on odroidgoa for example)
+fi
 
 # remove kodi default joystick configuration files
 # while as a minimum, the file joystick.Sony.PLAYSTATION(R)3.Controller.xml makes references to PS4 controllers with axes which doesn't exist (making kodi crashing)
@@ -65,13 +72,6 @@ mkdir "${TARGET_DIR}/"{var,run,sys,tmp}  || exit 1
 # make /etc/shadow a file generated from /boot/batocera-boot.conf for security
 rm -f "${TARGET_DIR}/etc/shadow"                         || exit 1
 ln -sf "/run/batocera.shadow" "${TARGET_DIR}/etc/shadow" || exit 1
-
-# fix the vt100 terminal ; can probably removed in the future
-if ! grep -qE "^TERM=vt100$" "${TARGET_DIR}/etc/profile"
-then
-    echo              >> "${TARGET_DIR}/etc/profile"
-    echo "TERM=vt100" >> "${TARGET_DIR}/etc/profile"
-fi
 
 # fix pixbuf : Unable to load image-loading module: /lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-png.so
 # this fix is to be removed once fixed. i've not found the exact source in buildroot. it prevents to display icons in filemanager and some others

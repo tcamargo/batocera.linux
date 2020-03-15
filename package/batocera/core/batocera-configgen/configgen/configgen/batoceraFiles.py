@@ -8,6 +8,7 @@ SCREENSHOTS = '/userdata/screenshots'
 BIOS = '/userdata/bios'
 OVERLAYS = '/userdata/overlays'
 CACHE = '/userdata/system/cache'
+ROMS = '/userdata/roms'
 
 esInputs = CONF + '/emulationstation/es_input.cfg'
 esSettings = CONF + '/emulationstation/es_settings.cfg'
@@ -24,20 +25,20 @@ batoceraBins = {'dosbox'      : '/usr/bin/dosbox'
               , 'ppsspp'      : '/usr/bin/PPSSPPSDL'
               , 'reicast'     : '/usr/bin/reicast.elf'
               , 'scummvm'     : '/usr/bin/scummvm'
-              , 'vice'        : '/usr/bin/x64'
+              , 'vice'        : '/usr/bin/'
               , 'fsuae'       : '/usr/bin/fs-uae'
               , 'amiberry'    : '/usr/bin/amiberry'
               , 'dolphin'     : '/usr/bin/dolphin-emu'
               , 'pcsx2'       : '/usr/PCSX/bin/PCSX2'
               , 'pcsx2_avx2'  : '/usr/PCSX_AVX2/bin/PCSX2'
-              , 'citra'       : '/usr/bin/citra'
+              , 'citra'       : '/usr/bin/citra-qt'
+              , 'daphne'       : '/usr/bin/hypseus'
 }
 
 
 retroarchRoot = CONF + '/retroarch'
 retroarchRootInit = CONF_INIT + '/retroarch'
 retroarchCustom = retroarchRoot + '/retroarchcustom.cfg'
-retroarchCustomOrigin = retroarchRootInit + "/retroarchcustom.cfg"
 retroarchCoreCustom = retroarchRoot + "/cores/retroarch-core-options.cfg"
 
 retroarchCores = "/usr/lib/libretro/"
@@ -64,6 +65,7 @@ moonlightMapping[3] = moonlightCustom + '/mappingP3.conf'
 moonlightMapping[4] = moonlightCustom + '/mappingP4.conf'
 
 reicastCustom = CONF + '/reicast'
+reicastMapping = reicastCustom + '/mappings'
 reicastConfig = reicastCustom + '/emu.cfg'
 reicastSaves = SAVES + '/dreamcast'
 reicastBios = BIOS
@@ -87,19 +89,19 @@ ppssppControls = CONF + '/ppsspp/gamecontrollerdb.txt'
 ppssppControlsInit = HOME_INIT + 'configs/ppsspp/PSP/SYSTEM/controls.ini'
 ppssppConfig = ppssppConf + '/ppsspp.ini'
 
-citraConfig = CONF + '/citra-emu/sdl2-config.ini'
+citraConfig = CONF + '/citra-emu/qt-config.ini'
 citraSaves = SAVES + '/3ds'
 
 dosboxCustom = CONF + '/dosbox'
 dosboxConfig = dosboxCustom + '/dosbox.conf'
 
 fsuaeBios = BIOS
-fsuaeConfig = CONF + "/FS-UAE"
+fsuaeConfig = CONF + "/fs-uae"
 fsuaeSaves = SAVES + "/amiga"
 
 scummvmSaves = SAVES + '/scummvm'
 
-viceConfig = CONF + "/vice/vice.conf"
+viceConfig = CONF + "/vice"
 
 overlaySystem = "/usr/share/batocera/datainit/decorations"
 overlayUser = "/userdata/decorations"
@@ -110,3 +112,8 @@ amiberryRetroarchInputsDir = amiberryRoot + '/conf/retroarch/inputs'
 amiberryRetroarchCustom = amiberryRoot + '/conf/retroarch/retroarchcustom.cfg'
 
 hatariConf = CONF + '/hatari/hatari.cfg'
+
+daphneConfig = CONF + '/daphne/hypinput.ini'
+daphneHomedir = ROMS + '/daphne'
+daphneDatadir = '/usr/share/daphne'
+daphneSaves = SAVES + '/daphne'
